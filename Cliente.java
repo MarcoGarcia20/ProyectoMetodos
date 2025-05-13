@@ -2,7 +2,7 @@
 import java.io.RandomAccessFile;
 import java.time.LocalDate;
 
-public class Cliente implements Grabar {
+public class Cliente implements Acceso {
     private String dni;
     private int edad;
     private String nombre;
@@ -55,8 +55,8 @@ public class Cliente implements Grabar {
         
         try {
             archivo.writeUTF(getDni());
-            archivo.writeUTF(getNombre());
             archivo.writeInt(edad);
+            archivo.writeUTF(getNombre());
             archivo.writeUTF(getCorreo());
             archivo.writeLong(getIniSus().toEpochDay());
             archivo.writeUTF(getCelular());
@@ -66,14 +66,18 @@ public class Cliente implements Grabar {
     }
 
     @Override
-    public void leer(RandomAccessFile archivo) {
+    public void mostrarDatos(RandomAccessFile archivo) {
         try {
             archivo.seek(0);
-            archivo.readUTF();
+            System.out.println("DNI: " + archivo.readUTF());
+            System.out.println("Nombre: " + archivo.readUTF());
+            System.out.println("Edad: " + archivo.readInt());
+            System.out.println("Correo: " + archivo.readUTF());
+            System.out.println("Inicio de Suscripción: " + LocalDate.ofEpochDay(archivo.readLong()));
+            System.out.println("Celular: " + archivo.readUTF());
         } catch (Exception e) {
-            e.getMessage();
+            System.err.println("Error displaying data: " + e.getMessage());
         }
     }
-    
-    
+
 }

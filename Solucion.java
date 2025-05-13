@@ -1,7 +1,7 @@
 
 import java.io.RandomAccessFile;
 import java.time.LocalDate;
-public class Solucion implements Grabar{
+public class Solucion implements Acceso{
     private String descripcion;
     private LocalDate fechaSolucion;
     private String responsable;

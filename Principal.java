@@ -1,6 +1,6 @@
 
 import java.io.IOException;
-class Prueba {
+class Principal {
     public static void main(String[] args) throws IOException{
         
     try{

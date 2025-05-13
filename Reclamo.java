@@ -1,6 +1,6 @@
 import java.io.RandomAccessFile;
 import java.time.LocalDate;
-public class Reclamo implements Grabar {
+public class Reclamo implements Acceso {
     private LocalDate fecha;
     private String numeroLineaReclamo;
     private Boolean estado;

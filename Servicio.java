@@ -1,7 +1,7 @@
 import java.io.RandomAccessFile;
 import java.time.LocalDate;
 
-public class Servicio implements Grabar {
+public class Servicio implements Acceso {
     private String nombre;
     private double montoPlan;
     private LocalDate fechaVencimiento;
