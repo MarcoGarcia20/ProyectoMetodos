@@ -35,12 +35,22 @@ public class Reclamo implements Grabar {
     }
 
     @Override
-    public void grabar(RandomAccessFile archivo) {
+    public void escribir(RandomAccessFile archivo) {
         try {
             archivo.writeLong(getFecha().toEpochDay());
             archivo.writeUTF(getNumeroLineaReclamo());
             archivo.writeBoolean(getEstado());
             archivo.writeUTF(getSolucion());
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+
+    @Override
+    public void leer(RandomAccessFile archivo) {
+        try {
+            archivo.seek(0);
+            archivo.readUTF();
         } catch (Exception e) {
             e.getMessage();
         }

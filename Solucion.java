@@ -29,13 +29,23 @@ public class Solucion implements Grabar{
     }
 
     @Override
-    public void grabar(RandomAccessFile archivo) {
+    public void escribir(RandomAccessFile archivo) {
         try {
             archivo.writeUTF(getDescripcion());
             archivo.writeUTF(getResponsable());
             archivo.writeLong(getFechaSolucion().toEpochDay());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void leer(RandomAccessFile archivo) {
+        try {
+            archivo.seek(0);
+            archivo.readUTF();
+        } catch (Exception e) {
+            e.getMessage();
         }
     }
 }

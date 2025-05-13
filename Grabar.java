@@ -1,5 +1,7 @@
 import java.io.RandomAccessFile;
 
 public interface Grabar {
-    void grabar(RandomAccessFile archivo);
-} 
+    void escribir(RandomAccessFile archivo);
+    void leer(RandomAccessFile archivo);
+}
+

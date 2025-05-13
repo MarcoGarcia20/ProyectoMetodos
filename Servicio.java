@@ -34,12 +34,21 @@ public class Servicio implements Grabar {
         this.montoRecarga = montoRecarga;
     }
     @Override
-    public void grabar(RandomAccessFile archivo) {
+    public void escribir(RandomAccessFile archivo) {
         try {
             archivo.writeUTF(getNombre());
             archivo.writeDouble(getMontoPlan());
             archivo.writeLong(getFechaVencimiento().toEpochDay());
             archivo.writeDouble(getMontoRecarga());
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+    @Override
+    public void leer(RandomAccessFile archivo) {
+        try {
+            archivo.seek(0);
+            archivo.readUTF();
         } catch (Exception e) {
             e.getMessage();
         }

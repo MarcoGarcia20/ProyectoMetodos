@@ -51,7 +51,7 @@ public class Cliente implements Grabar {
     }
 
     @Override
-    public void grabar(RandomAccessFile archivo) {
+    public void escribir(RandomAccessFile archivo) {
         
         try {
             archivo.writeUTF(getDni());
@@ -60,6 +60,16 @@ public class Cliente implements Grabar {
             archivo.writeUTF(getCorreo());
             archivo.writeLong(getIniSus().toEpochDay());
             archivo.writeUTF(getCelular());
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+
+    @Override
+    public void leer(RandomAccessFile archivo) {
+        try {
+            archivo.seek(0);
+            archivo.readUTF();
         } catch (Exception e) {
             e.getMessage();
         }
