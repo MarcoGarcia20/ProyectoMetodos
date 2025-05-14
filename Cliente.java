@@ -52,7 +52,6 @@ public class Cliente implements Acceso {
 
     @Override
     public void escribir(RandomAccessFile archivo) {
-        
         try {
             archivo.writeUTF(getDni());
             archivo.writeInt(edad);
@@ -68,13 +67,16 @@ public class Cliente implements Acceso {
     @Override
     public void mostrarDatos(RandomAccessFile archivo) {
         try {
-            archivo.seek(0);
-            System.out.println("DNI: " + archivo.readUTF());
-            System.out.println("Nombre: " + archivo.readUTF());
-            System.out.println("Edad: " + archivo.readInt());
-            System.out.println("Correo: " + archivo.readUTF());
-            System.out.println("Inicio de Suscripción: " + LocalDate.ofEpochDay(archivo.readLong()));
-            System.out.println("Celular: " + archivo.readUTF());
+            while (archivo.getFilePointer() < archivo.length()) {
+                System.out.println("_________________________________");
+                System.out.println("DNI: " + archivo.readUTF());
+                System.out.println("Edad: " + archivo.readInt());
+                System.out.println("Nombre: " + archivo.readUTF());
+
+                System.out.println("Correo: " + archivo.readUTF());
+                System.out.println("Inicio de Suscripción: " + LocalDate.ofEpochDay(archivo.readLong()));
+                System.out.println("Celular: " + archivo.readUTF());
+            }
         } catch (Exception e) {
             System.err.println("Error displaying data: " + e.getMessage());
         }
