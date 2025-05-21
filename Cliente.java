@@ -66,20 +66,46 @@ public class Cliente implements Acceso {
 
     @Override
     public void mostrarDatos(RandomAccessFile archivo) {
-        try {
-            while (archivo.getFilePointer() < archivo.length()) {
-                System.out.println("_________________________________");
-                System.out.println("DNI: " + archivo.readUTF());
-                System.out.println("Edad: " + archivo.readInt());
-                System.out.println("Nombre: " + archivo.readUTF());
+    try {
+        while (archivo.getFilePointer() < archivo.length()) {
+            System.out.println("_________________________________");
+            
+            // DNI: 8 bytes (String)
+            byte[] dniBytes = new byte[8];
+            archivo.readFully(dniBytes);
+            System.out.println("DNI: " + new String(dniBytes, "ISO-8859-1").trim());
 
-                System.out.println("Correo: " + archivo.readUTF());
-                System.out.println("Inicio de Suscripción: " + LocalDate.ofEpochDay(archivo.readLong()));
-                System.out.println("Celular: " + archivo.readUTF());
-            }
-        } catch (Exception e) {
-            System.err.println("Error displaying data: " + e.getMessage());
+            // Edad: 2 bytes (String numérico)
+            byte[] edadBytes = new byte[2];
+            archivo.readFully(edadBytes);
+            System.out.println("Edad: " + new String(edadBytes, "ISO-8859-1").trim());
+
+            // Nombre: 10 bytes (String)
+            byte[] nombreBytes = new byte[10];
+            archivo.readFully(nombreBytes);
+            System.out.println("Nombre: " + new String(nombreBytes, "ISO-8859-1").trim());
+
+            // Apellido: 10 bytes (String)
+            byte[] apellidoBytes = new byte[10];
+            archivo.readFully(apellidoBytes);
+            System.out.println("Apellido: " + new String(apellidoBytes, "ISO-8859-1").trim());
+
+            // Correo: 20 bytes (String)
+            byte[] correoBytes = new byte[20];
+            archivo.readFully(correoBytes);
+            System.out.println("Correo: " + new String(correoBytes, "ISO-8859-1").trim());
+
+            // Fecha: 8 bytes (long)
+            System.out.println("Inicio de Suscripción: " + LocalDate.ofEpochDay(archivo.readLong()));
+
+            // Celular: 9 bytes (String numérico)
+            byte[] celularBytes = new byte[9];
+            archivo.readFully(celularBytes);
+            System.out.println("Celular: " + new String(celularBytes, "ISO-8859-1").trim());
         }
+    } catch (Exception e) {
+        System.err.println("Error displaying data: " + e.getMessage());
     }
+}
 
 }
