@@ -8,7 +8,7 @@ public class VentanaPrincipal extends JFrame {
 
     public VentanaPrincipal() {
         initComponents();
-        setSize(350, 400);
+        setSize(500, 500);
         setLocationRelativeTo(null);
     }
 
@@ -71,8 +71,6 @@ public class VentanaPrincipal extends JFrame {
             new VentanaPrincipal().setVisible(true);
         });
     }
-
-    // Variables declaration
     private JMenuBar jMenuBar1;
     private JLabel jLabel1 = new JLabel("Ventana Principal");
 

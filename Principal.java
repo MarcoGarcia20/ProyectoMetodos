@@ -7,16 +7,14 @@ class Principal {
     public static void main(String[] args) throws IOException{
         
     try{
-        VentanaPrincipal principal = new VentanaPrincipal();
         // Crear la ventana de la aplicación
-        VentanaCrear ventanaCrear = new VentanaCrear();
-        // Configurar la ventana de la aplicación
-        ventanaCrear.setVisible(true);
+        VentanaPrincipal principal = new VentanaPrincipal();
 
-        //principal.setVisible(true);
+        principal.setVisible(true);
         //Aplicacion app = new Aplicacion();
+        
     }catch (Exception e) {
-        System.out.println("Error al abrir el archivo: " + e.getMessage());
+        System.out.println("Error : " + e.getMessage());
     }   
     }
 }
