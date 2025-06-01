@@ -1,7 +1,7 @@
 package Ventanas;
 
 import java.awt.*;
-import javax.swing.JMenuBar;
+
 import javax.swing.*;
 
 public class VentanaPrincipal extends JFrame {
@@ -20,31 +20,47 @@ public class VentanaPrincipal extends JFrame {
         JMenu jMenu2 = new JMenu("Editar");
         JMenu jMenu3 = new JMenu("Ver");
         JMenu jMenu4 = new JMenu("Ayuda");
-
-        JMenuItem crearMenuItem = new JMenuItem("Crear");
-        JMenuItem buscarMenuItem = new JMenuItem("Buscar");
-        JMenuItem modificarMenuItem = new JMenuItem("Modificar");
-        JMenuItem eliminarMenuItem = new JMenuItem("Eliminar");
-
         
+        // Crear el submenú "Cliente"
+        JMenu clienteMenu = new JMenu("Cliente");
+
+        JMenuItem ingresarMenuItem = new JMenuItem("Ingresar Cliente");
+        JMenuItem consultarMenuItem = new JMenuItem("Consultar Cliente");
+        JMenuItem listarMenuItem = new JMenuItem("Listar Clientes");
+        JMenuItem modificarMenuItem = new JMenuItem("Modificar Cliente");
+        JMenuItem eliminarMenuItem = new JMenuItem("Eliminar Cliente");
+
         // Agregar ActionListeners para cada opción del menú
-        crearMenuItem.addActionListener(e -> {
-            VentanaCrear ventanaCrear = new VentanaCrear();
+        ingresarMenuItem.addActionListener(e -> {
+            VentanaIngresarCliente ventanaCrear = new VentanaIngresarCliente();
             ventanaCrear.setVisible(true);
         });
-        buscarMenuItem.addActionListener(e -> 
-        {
-            VentanaBuscar ventanaBuscar = new VentanaBuscar();
+        consultarMenuItem.addActionListener(e -> {
+            VentanaConsultarCliente ventanaBuscar = new VentanaConsultarCliente();
             ventanaBuscar.setVisible(true);
         });
+        listarMenuItem.addActionListener(e -> {
+            VentanaListarCliente ventanaListar = new VentanaListarCliente();
+            ventanaListar.setVisible(true);
+        });
+        modificarMenuItem.addActionListener(e -> {
+            VentanaModificarCliente ventanaModificar = new VentanaModificarCliente();
+            ventanaModificar.setVisible(true);
+        });
+        eliminarMenuItem.addActionListener(e -> {
+            VentanaEliminarCliente ventanaEliminar = new VentanaEliminarCliente();
+            ventanaEliminar.setVisible(true);
+        });
 
-        modificarMenuItem.addActionListener(e -> JOptionPane.showMessageDialog(this, "Opción Modificar seleccionada"));
-        eliminarMenuItem.addActionListener(e -> JOptionPane.showMessageDialog(this, "Opción Eliminar seleccionada"));
+        // Agregar los items al submenú "Cliente"
+        clienteMenu.add(ingresarMenuItem);
+        clienteMenu.add(consultarMenuItem);
+        clienteMenu.add(listarMenuItem);
+        clienteMenu.add(modificarMenuItem);
+        clienteMenu.add(eliminarMenuItem);
 
-        jMenu1.add(crearMenuItem);
-        jMenu1.add(buscarMenuItem);
-        jMenu1.add(modificarMenuItem);
-        jMenu1.add(eliminarMenuItem);
+        // Agregar el submenú "Cliente" al menú "Archivo"
+        jMenu1.add(clienteMenu);
 
         jMenuBar1.add(jMenu1);
         jMenuBar1.add(jMenu2);
@@ -52,26 +68,16 @@ public class VentanaPrincipal extends JFrame {
         jMenuBar1.add(jMenu4);
 
         setJMenuBar(jMenuBar1);
-        
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("Ventana Principal");
-
+        setTitle("Sistema de Reclamos Konecta");
         setResizable(false);
 
         jLabel1.setText("Ventana Principal");
 
-        // Layout code omitted for brevity
-
         pack();
     }
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new VentanaPrincipal().setVisible(true);
-        });
-    }
     private JMenuBar jMenuBar1;
     private JLabel jLabel1 = new JLabel("Ventana Principal");
-
 }

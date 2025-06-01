@@ -11,6 +11,8 @@ public class Cliente implements Acceso {
     private String correo;
     private LocalDate iniSus;
     private String celular;
+
+    public static final int LONGITUD_REGISTRO = 69; // 8 + 4 + 20 + 20 + 8 + 9
     public Cliente() {
     }
     
@@ -56,7 +58,7 @@ public class Cliente implements Acceso {
     public void escribir(RandomAccessFile archivo) {
         try {
             escribirCampoFijo(archivo, validarDNI(getDni()),8);
-            archivo.writeInt(edad);
+            archivo.writeInt(validarEdad(getEdad()));
             escribirCampoFijo(archivo, validarNombre(getNombre()), 20);
             escribirCampoFijo(archivo, validarCorreo(getCorreo()), 20);
             archivo.writeLong(getIniSus().toEpochDay());
@@ -87,8 +89,8 @@ public class Cliente implements Acceso {
     
     public void crearClientesAleatorios(RandomAccessFile archivo, int cantidad) throws IOException {
     Random rand = new Random();
-    String[] nombres = {"Juan", "Maria", "Luis", "Ana", "Carlos", "Sofia", "Pedro", "Laura", "Diego", "Elena", "Javier", "Isabel", "Andres", "Carmen", "Raul", "Patricia", "Miguel", "Lucia", "Alberto", "Sara"};
-    String[] apellidos = {"Garcia", "Rodriguez", "Martinez", "Lopez", "Perez", "Gonzalez", "Sanchez", "Romero", "Fernandez", "Torres", "Diaz", "Moreno", "Alvarez", "Jimenez", "Ruiz", "Hernandez", "Castro", "Ortiz", "Gutierrez", "Molina"};
+    String[] nombres = {"Juan", "Maria", "Luis", "Ana", "Carlos", "Sofia", "Pedro", "Laura", "Diego", "Elena", "Javier", "Isabel", "Andres", "Carmen", "Raul", "Patricia", "Miguel", "Lucia", "Alberto", "Sara", "Fernando", "Claudia", "Victor", "Paula", "Jorge", "Marta", "David", "Cristina", "Antonio", "Veronica", "Ricardo", "Silvia", "Eduardo", "Teresa", "Roberto", "Lorena", "Hector", "Beatriz"};
+    String[] apellidos = {"Garcia", "Rodriguez", "Martinez", "Lopez", "Perez", "Gonzalez", "Sanchez", "Romero", "Fernandez", "Torres", "Diaz", "Moreno", "Alvarez", "Jimenez", "Ruiz", "Hernandez", "Castro", "Ortiz", "Gutierrez", "Molina", "Reyes", "Cruz", "Ramirez", "Flores", "Vasquez", "Guzman", "Ramos", "Mendez", "Castillo", "Delgado", "Aguilar", "Navarro", "Paredes", "Soto", "Cabrera", "Salazar", "Campos", "Cortez"};
     try {
         for (int i = 0; i < cantidad; i++) {
             String dni = String.format("%08d", rand.nextInt(100_000_000));
@@ -167,8 +169,7 @@ public class Cliente implements Acceso {
         campo += " ";
     }
     archivo.write(campo.getBytes("ISO-8859-1")); // Escritura fija
-}
-
+    }
 
     private String validarDNI(String dni) {
         if (!dni.matches("\\d{8}")) throw new IllegalArgumentException("DNI inválido");
@@ -203,6 +204,17 @@ public class Cliente implements Acceso {
             throw new IllegalArgumentException("Celular inválido");
         return celular;
     }
-}
 
+    @Override
+    public void posicionar(RandomAccessFile archivo, int registro) throws IOException {
+        if (registro < 0) {
+            throw new IllegalArgumentException("El número de registros no puede ser negativo");
+            }
+            long posicionBytes = (long) registro * LONGITUD_REGISTRO;
+            if (posicionBytes > archivo.length()) {
+                throw new IOException("El número de registros excede el tamaño del archivo");
+            }
+            archivo.seek(posicionBytes);
+    }
+}
 

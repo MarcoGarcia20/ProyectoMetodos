@@ -1,9 +1,10 @@
 package Entidades;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public interface Acceso {
     void escribir(RandomAccessFile archivo);
     void leer(RandomAccessFile archivo);
-    //void mostrarDatos(RandomAccessFile archivo);
+    void posicionar(RandomAccessFile archivo, int posicion) throws IOException;
 }
 

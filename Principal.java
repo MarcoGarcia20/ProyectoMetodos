@@ -1,7 +1,9 @@
 
 import java.io.IOException;
 
-import Ventanas.VentanaCrear;
+import javax.swing.SwingUtilities;
+
+import Ventanas.VentanaIngresarCliente;
 import Ventanas.VentanaPrincipal;
 class Principal {
     public static void main(String[] args) throws IOException{
@@ -12,7 +14,6 @@ class Principal {
 
         principal.setVisible(true);
         //Aplicacion app = new Aplicacion();
-        
     }catch (Exception e) {
         System.out.println("Error : " + e.getMessage());
     }   
