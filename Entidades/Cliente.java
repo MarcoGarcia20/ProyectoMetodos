@@ -4,6 +4,8 @@ import java.io.RandomAccessFile;
 import java.time.LocalDate;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 public class Cliente implements Acceso {
     private String dni;
     private int edad;
@@ -71,22 +73,45 @@ public class Cliente implements Acceso {
     @Override
     public void leer(RandomAccessFile archivo) {
         try {
-            this.dni = leerCampo(archivo, 8);
+            this.dni = leerCampo(archivo, 8).trim();
+            // Si DNI está vacío, saltar el resto del registro
+            if (dni.trim().isEmpty()) {
+                archivo.skipBytes(LONGITUD_REGISTRO - 8);
+                this.edad = 0;
+                this.nombre = "";
+                this.correo = "";
+                this.iniSus = null;
+                this.celular = "";
+                return;
+            }
+            
             this.edad = archivo.readInt();
-            this.nombre = leerCampo(archivo, 20);
-            this.correo = leerCampo(archivo, 20);
+            this.nombre = leerCampo(archivo, 20).trim();
+            this.correo = leerCampo(archivo, 20).trim();
             this.iniSus = LocalDate.ofEpochDay(archivo.readLong());
-            this.celular = leerCampo(archivo, 9);
+            this.celular = leerCampo(archivo, 9).trim();
         } catch (Exception e) {
-            e.getMessage();
+            JOptionPane.showMessageDialog(null, "Error al leer el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    @Override
+    public void posicionar(RandomAccessFile archivo, int registro) throws IOException {
+        if (registro < 0) {
+            throw new IllegalArgumentException("El número de registros no puede ser negativo");
+            }
+            long posicionBytes = (long) registro * LONGITUD_REGISTRO;
+            if (posicionBytes > archivo.length()) {
+                throw new IOException("El número de registros excede el tamaño del archivo");
+            }
+            archivo.seek(posicionBytes);
+    }
+
     private static String leerCampo(RandomAccessFile archivo, int longitud) throws IOException {
         byte[] buffer = new byte[longitud];
         archivo.readFully(buffer);
         return new String(buffer, "ISO-8859-1").trim();
     }
-    
+    // Método para crear clientes aleatorios y escribirlos en el archivo
     public void crearClientesAleatorios(RandomAccessFile archivo, int cantidad) throws IOException {
     Random rand = new Random();
     String[] nombres = {"Juan", "Maria", "Luis", "Ana", "Carlos", "Sofia", "Pedro", "Laura", "Diego", "Elena", "Javier", "Isabel", "Andres", "Carmen", "Raul", "Patricia", "Miguel", "Lucia", "Alberto", "Sara", "Fernando", "Claudia", "Victor", "Paula", "Jorge", "Marta", "David", "Cristina", "Antonio", "Veronica", "Ricardo", "Silvia", "Eduardo", "Teresa", "Roberto", "Lorena", "Hector", "Beatriz"};
@@ -108,8 +133,6 @@ public class Cliente implements Acceso {
                 nombreCompleto = nombreCompleto.substring(0, 20);
             }
             setNombre(nombreCompleto);
-
-
             // Generar correo válido de 20 caracteres
             String baseCorreo = (nombre.trim() + apellido.trim()).toLowerCase();
             int maxBaseLength = 10; // Parte antes de @gmail.com (10 caracteres)
@@ -205,16 +228,5 @@ public class Cliente implements Acceso {
         return celular;
     }
 
-    @Override
-    public void posicionar(RandomAccessFile archivo, int registro) throws IOException {
-        if (registro < 0) {
-            throw new IllegalArgumentException("El número de registros no puede ser negativo");
-            }
-            long posicionBytes = (long) registro * LONGITUD_REGISTRO;
-            if (posicionBytes > archivo.length()) {
-                throw new IOException("El número de registros excede el tamaño del archivo");
-            }
-            archivo.seek(posicionBytes);
-    }
 }
 

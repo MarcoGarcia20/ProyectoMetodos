@@ -32,7 +32,7 @@ public class VentanaListarCliente extends JFrame implements Datos {
         }
 
         setTitle("Listar Clientes");
-        setSize(600, 600);
+        setSize(800, 800);
         setLayout(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -42,7 +42,7 @@ public class VentanaListarCliente extends JFrame implements Datos {
         tabla = new JTable(modelo);
 
         JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setBounds(50, 50, 500, 500);
+        scroll.setBounds(50, 50, 700, 700);
         add(scroll);
 
 
@@ -52,8 +52,6 @@ public class VentanaListarCliente extends JFrame implements Datos {
         registros = new HashSet<>();
 
         botonListar.addActionListener(e -> cargarDesdeArchivo(archivo));
-        // Aquí puedes agregar la tabla a un JScrollPane y luego a tu JFrame
-
     }
 
     @Override
@@ -69,9 +67,8 @@ public class VentanaListarCliente extends JFrame implements Datos {
             c.leer(archivo);
             
             // Verificar lectura correcta
-            if (c.getDni() == null || c.getDni().isEmpty()) break;
-            
-            modelo.addRow(new Object[]{
+            if (!c.getDni().isEmpty()) {
+                modelo.addRow(new Object[]{
                 c.getDni(),
                 c.getEdad(),
                 c.getNombre(),
@@ -79,6 +76,7 @@ public class VentanaListarCliente extends JFrame implements Datos {
                 c.getIniSus(),
                 c.getCelular()
             });
+            }            
             registros.add(c.getDni());
         }
         } catch (Exception e) {
@@ -87,7 +85,7 @@ public class VentanaListarCliente extends JFrame implements Datos {
             try {
                 if (archivo != null) archivo.close();
             } catch (IOException ex) {
-                // Ignorar
+                JOptionPane.showMessageDialog(this, "Error al cerrar el archivo: " + ex.getMessage());
             }
         }
     }

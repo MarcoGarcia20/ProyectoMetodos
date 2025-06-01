@@ -20,6 +20,8 @@ public class VentanaEliminarCliente extends VentanaFormularioCliente{
         btnEliminar.setBounds(280, 220, 90, 25);
         btnEliminar.addActionListener(this::eliminarRegistro);
         add(btnEliminar);
+        btnEliminar.setEnabled(false); // Deshabilitar inicialmente
+        desabilitarCampos();
     }
     @Override
     protected void buscarCliente(ActionEvent e) {
@@ -28,8 +30,6 @@ public class VentanaEliminarCliente extends VentanaFormularioCliente{
             // Guardar posición del registro encontrado
             posicionRegistro = indiceDNI.get(campoDni.getText().trim());
             btnEliminar.setEnabled(true);  // Habilitar eliminación
-        } else {
-            btnEliminar.setEnabled(false);
         }
     }
 
@@ -42,12 +42,15 @@ public class VentanaEliminarCliente extends VentanaFormularioCliente{
                 archivo = new RandomAccessFile(ruta, "rw");
                 archivo.seek(posicionRegistro * Cliente.LONGITUD_REGISTRO); // Mover el puntero al registro encontrado
                 archivo.write(String.format("%-8s", "").getBytes("ISO-8859-1")); // Escribir un registro vacío (eliminar)
+                indiceDNI.remove(campoDni.getText().trim()); // Eliminar del índice
                 JOptionPane.showMessageDialog(this, "✔ Registro eliminado.");
                 limpiarCampos();
                 btnEliminar.setEnabled(false);
+                archivo.close();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error al posicionar el archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
 }

@@ -146,6 +146,7 @@ public abstract class VentanaFormularioCliente extends JFrame {
         encontrado = false;
         // Verificar si el DNI existe en el índice
         if (!indiceDNI.containsKey(buscarDni)) {
+            desabilitarCampos();
             JOptionPane.showMessageDialog(this, 
             "Cliente no encontrado", 
             "Información", JOptionPane.INFORMATION_MESSAGE);
@@ -169,6 +170,7 @@ public abstract class VentanaFormularioCliente extends JFrame {
             encontrado = true;
 
             JOptionPane.showMessageDialog(this, "Cliente encontrado", "Información", JOptionPane.INFORMATION_MESSAGE);
+            desabilitarCampos();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error al buscar el cliente: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -180,6 +182,22 @@ public abstract class VentanaFormularioCliente extends JFrame {
         campoCorreo.setText("");
         campoCelular.setText("");
         campoInisus.setText("");
+    }
+    protected void habilitarCampos() {
+        campoEdad.setEnabled(true);
+        campoNombre.setEnabled(true);
+        campoCorreo.setEnabled(true);
+        campoCelular.setEnabled(true);
+        campoInisus.setEnabled(true);
+    }
+    protected void desabilitarCampos() {
+        JTextField[] campos = {campoEdad, campoNombre, campoCorreo, campoCelular, campoInisus};
+        for (JTextField campo : campos) {
+            campo.setEnabled(false);
+            campo.setDisabledTextColor(campo.getForeground());
+            campo.setOpaque(true);
+            campo.setBackground(getBackground());
+        }
     }
 
     protected abstract void configurar();   
