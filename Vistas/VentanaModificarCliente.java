@@ -1,9 +1,8 @@
-package Ventanas;
+package Vistas;
 
 import Entidades.Cliente;
 import javax.swing.*;
 import java.awt.event.*;
-import java.io.*;
 import java.time.LocalDate;
 
 public class VentanaModificarCliente extends VentanaFormularioCliente {
@@ -21,34 +20,25 @@ public class VentanaModificarCliente extends VentanaFormularioCliente {
         botonModificar.setBounds(280, 220, 90, 25);
         add(botonModificar);
         botonModificar.addActionListener(this::modificarCliente);
+        botonModificar.setEnabled(false); // Deshabilitar inicialmente
     }
     @Override
-    protected void buscarCliente(ActionEvent e) {
+    protected void buscarCliente(ActionEvent e){
         super.buscarCliente(e);
-        if (getEncontrado()) {
-            // Guardar posición del registro encontrado
-            posicionRegistro = indiceDNI.get(campoDni.getText().trim());
-            botonModificar.setEnabled(true);  // Habilitar modificación
-        } else {
-            botonModificar.setEnabled(false);
-        }
+        botonModificar.setEnabled(true); // Habilitar el botón de modificar si se encuentra el cliente
     }
 
     private void modificarCliente(ActionEvent e) {
         try {
             int confirm = JOptionPane.showConfirmDialog(this,
              "¿Deseas modificar este registro?", "Confirmar", JOptionPane.YES_NO_OPTION);
-            if (confirm != JOptionPane.YES_OPTION) return;
-
-            Cliente c = obtenerClienteDesdeCampos();
-
-            archivo = new RandomAccessFile(ruta, "rw");
-            archivo.seek(posicionRegistro * Cliente.LONGITUD_REGISTRO); // Mover el puntero al registro encontrado
-            c.escribir(archivo);
-            
-            JOptionPane.showMessageDialog(this, "✔ Registro modificado.");
-            botonModificar.setEnabled(false);
-            archivo.close();
+            if (confirm != JOptionPane.YES_OPTION){
+                return; // Si el usuario cancela, no hacer nada
+            } else {
+                controlador.modificarCliente();
+                mostrarMensaje("✔ Registro modificado.");
+                botonModificar.setEnabled(false);
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error al modificar: " + ex.getMessage());
         }

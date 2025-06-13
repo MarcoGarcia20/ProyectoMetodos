@@ -1,11 +1,15 @@
-package Ventanas;
+package Vistas;
 
 import java.awt.*;
 
 import javax.swing.*;
 
-public class VentanaPrincipal extends JFrame {
+import Controladores.ClienteControlador;
+import Persistencia.ClienteRepositorio;
 
+public class VentanaPrincipal extends JFrame {
+    private ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
+    
     public VentanaPrincipal() {
         initComponents();
         setSize(500, 500);
@@ -33,11 +37,15 @@ public class VentanaPrincipal extends JFrame {
         // Agregar ActionListeners para cada opción del menú
         ingresarMenuItem.addActionListener(e -> {
             VentanaIngresarCliente ventanaCrear = new VentanaIngresarCliente();
+            ClienteControlador controlador = new ClienteControlador(clienteRepositorio, ventanaCrear);
+            ventanaCrear.setControlador(controlador);
             ventanaCrear.setVisible(true);
         });
         consultarMenuItem.addActionListener(e -> {
-            VentanaConsultarCliente ventanaBuscar = new VentanaConsultarCliente();
-            ventanaBuscar.setVisible(true);
+            VentanaConsultarCliente ventanaConsultarCliente = new VentanaConsultarCliente();
+            ClienteControlador controlador = new ClienteControlador(clienteRepositorio, ventanaConsultarCliente);
+            ventanaConsultarCliente.setControlador(controlador);
+            ventanaConsultarCliente.setVisible(true);
         });
         listarMenuItem.addActionListener(e -> {
             VentanaListarCliente ventanaListar = new VentanaListarCliente();
@@ -45,10 +53,14 @@ public class VentanaPrincipal extends JFrame {
         });
         modificarMenuItem.addActionListener(e -> {
             VentanaModificarCliente ventanaModificar = new VentanaModificarCliente();
+            ClienteControlador controlador = new ClienteControlador(clienteRepositorio, ventanaModificar);
+            ventanaModificar.setControlador(controlador);
             ventanaModificar.setVisible(true);
         });
         eliminarMenuItem.addActionListener(e -> {
             VentanaEliminarCliente ventanaEliminar = new VentanaEliminarCliente();
+            ClienteControlador controlador = new ClienteControlador(clienteRepositorio, ventanaEliminar);
+            ventanaEliminar.setControlador(controlador);
             ventanaEliminar.setVisible(true);
         });
 

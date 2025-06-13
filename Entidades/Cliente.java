@@ -200,7 +200,7 @@ public class Cliente implements Acceso {
     }
 
     private int validarEdad(int edad) {
-        if (edad < 0 || edad > 120) throw new IllegalArgumentException("Edad inválida");
+        if (edad < 0 || edad > 90) throw new IllegalArgumentException("Edad inválida");
         return edad;
     }
 

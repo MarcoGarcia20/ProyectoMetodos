@@ -1,13 +1,9 @@
-package Ventanas;
+package Vistas;
 
 import Entidades.Cliente;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.time.LocalDate;
 
 public class VentanaIngresarCliente extends VentanaFormularioCliente{
@@ -24,35 +20,26 @@ public class VentanaIngresarCliente extends VentanaFormularioCliente{
         botonIngresar.setBounds(280, 220, 90, 25);
         add(botonIngresar);
         botonIngresar.addActionListener(this::ingresarCliente);
+        botonIngresar.setEnabled(false); // Deshabilitar el botón de ingresar
+    }
+    @Override
+    protected void buscarCliente(ActionEvent e){
+        super.buscarCliente(e);
+        botonIngresar.setEnabled(!isEncontrado());
+        if (isEncontrado()) {
+            mostrarMensaje("Cliente ya existe, no se puede ingresar nuevamente.");
+    }
+
     }
     private void ingresarCliente(ActionEvent e) {
         try {
-            if (!getEncontrado()) {
-            // Ingresar al cliente desde campos del formulario
-                Cliente cliente = new Cliente();
-                cliente.setDni(validarDNI(campoDni.getText()));
-                cliente.setEdad(validarEdad(campoEdad.getText()));
-                cliente.setNombre(validarNombre(campoNombre.getText()));
-                cliente.setCorreo(validarCorreo(campoCorreo.getText()));
-                cliente.setIniSus(LocalDate.parse(campoInisus.getText())); // Usa el formato correcto (yyyy-MM-dd)
-                cliente.setCelular(validarCelular(campoCelular.getText()));
-
-                archivo = new RandomAccessFile(ruta, "rw");
-                archivo.seek(archivo.length()); // Mover el puntero al final del archivo
-                cliente.escribir(archivo); // Llamar al método escribir de Cliente
-                archivo.close();
-
-                JOptionPane.showMessageDialog(null, "Cliente guardado exitosamente.");
-                botonIngresar.setEnabled(false);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Cliente ya se encuentra registrado.");
-                }
-            } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error al guardar: " + ex.getMessage());
-            }
+            controlador.ingresarCliente();
+            JOptionPane.showMessageDialog(this, "Cliente ingresado correctamente");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
-
-    
+ 
     public String validarDNI(String dni) throws Exception {
         if (!dni.matches("\\d{8}")) {
             throw new IllegalArgumentException("DNI debe tener 8 dígitos");
