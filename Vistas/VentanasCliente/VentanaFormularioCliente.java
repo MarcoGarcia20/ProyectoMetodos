@@ -1,4 +1,4 @@
-package Vistas;
+package Vistas.VentanasCliente;
 
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
@@ -93,7 +93,8 @@ public abstract class VentanaFormularioCliente extends JFrame {
                 encontrado = true; // Marcar como encontrado
             } else {
                 mostrarMensaje("Cliente no encontrado.");
-                limpiarCampos();
+                limpiarCamposSinDNI(); // Limpiar campos excepto DNI
+                
                 encontrado = false; // Marcar como no encontrado
             }
         } catch (Exception ex) {
@@ -165,6 +166,9 @@ public abstract class VentanaFormularioCliente extends JFrame {
    
     public void limpiarCampos() {
         campoDni.setText("");
+        limpiarCamposSinDNI();
+    }
+    public void limpiarCamposSinDNI(){
         campoEdad.setText("");
         campoNombre.setText("");
         campoCorreo.setText("");

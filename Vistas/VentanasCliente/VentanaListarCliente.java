@@ -1,4 +1,4 @@
-package Vistas;
+package Vistas.VentanasCliente;
 
 
 import java.util.List;
@@ -13,8 +13,9 @@ import javax.swing.table.DefaultTableModel;
 
 import Controladores.ClienteControlador;
 import Entidades.Cliente;
+import Vistas.IVistaCliente;
 
-public class VentanaListarCliente extends JFrame{
+public class VentanaListarCliente extends JFrame implements IVistaCliente {
     private JTable tabla;
     private DefaultTableModel modelo;
 
@@ -45,14 +46,19 @@ public class VentanaListarCliente extends JFrame{
             if (controlador != null) {
                 controlador.mostrarClientes();
             } else {
-                JOptionPane.showMessageDialog(this, "Controlador no asignado.");
+                mostrarMensaje("Controlador no asignado.");
             }
         });
     }
     public void setControlador(ClienteControlador controlador) {
         this.controlador = controlador;
     }
-    
+
+    @Override
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
+    @Override
     public void listarClientes(List<Cliente> clientes) {
         modelo.setRowCount(0); // Limpiar la tabla antes de listar
         for (Cliente c : clientes) {

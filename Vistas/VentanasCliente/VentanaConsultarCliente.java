@@ -1,4 +1,4 @@
-package Vistas;
+package Vistas.VentanasCliente;
 import Entidades.Cliente;
 import Persistencia.ClienteRepositorio;
 

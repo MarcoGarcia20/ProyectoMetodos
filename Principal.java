@@ -3,8 +3,8 @@ import java.io.IOException;
 
 import javax.swing.SwingUtilities;
 
-import Vistas.VentanaIngresarCliente;
 import Vistas.VentanaPrincipal;
+import Vistas.VentanasCliente.VentanaIngresarCliente;
 class Principal {
     public static void main(String[] args) throws IOException{
         

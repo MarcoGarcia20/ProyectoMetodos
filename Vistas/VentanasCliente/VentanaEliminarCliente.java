@@ -1,5 +1,6 @@
-package Vistas;
+package Vistas.VentanasCliente;
 import Entidades.Cliente;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -36,10 +37,13 @@ public class VentanaEliminarCliente extends VentanaFormularioCliente{
             if (confirm != JOptionPane.YES_OPTION){
                 mostrarMensaje("Operación cancelada por el usuario.");
                 return; // Si el usuario cancela, no hacer nada
-            } else {
-                controlador.eliminarCliente();
+            }
+            boolean eliminado = controlador.eliminarCliente(); // El controlador retorna si tuvo éxito
+            if (eliminado) {
                 mostrarMensaje("✔ Registro eliminado.");
                 btnEliminar.setEnabled(false);
+            } else {
+                mostrarMensaje("No se pudo eliminar el registro (puede que no exista).");
             }
         } catch (Exception ex) {
             mostrarMensaje("Error al modificar: " + ex.getMessage());

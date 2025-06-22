@@ -14,7 +14,10 @@ public class Cliente implements Acceso {
     private LocalDate iniSus;
     private String celular;
 
-    public static final int LONGITUD_REGISTRO = 69; // 8 + 4 + 20 + 20 + 8 + 9
+    private boolean clienteActivo = true; // Por defecto, el cliente está activo
+    private int siguienteDisponible = -1; // solo relevante si está inactivo
+
+    public static final int LONGITUD_REGISTRO = 8 + 4 + 20 + 20 + 8 + 9 + 1 + 4; // = 74
     public Cliente() {
     }
     
@@ -55,6 +58,22 @@ public class Cliente implements Acceso {
     public void setCelular(String celular) {
         this.celular = celular;
     }
+    public int getSiguienteDisponible() {
+        return siguienteDisponible;
+    }
+    public void setSiguienteDisponible(int siguienteDisponible) {
+        this.siguienteDisponible = siguienteDisponible;
+    }
+
+    @Override
+    public boolean isActivo() {
+        return clienteActivo;
+    }
+
+    @Override
+    public void setActivo(boolean activo) {
+        this.clienteActivo = activo;
+    }
 
     @Override
     public void escribir(RandomAccessFile archivo) {
@@ -65,6 +84,8 @@ public class Cliente implements Acceso {
             escribirCampoFijo(archivo, validarCorreo(getCorreo()), 20);
             archivo.writeLong(getIniSus().toEpochDay());
             escribirCampoFijo(archivo, validarCelular(getCelular()), 9);
+            archivo.writeBoolean(clienteActivo);
+            archivo.writeInt(siguienteDisponible); // Escribir el siguiente disponible
         } catch (Exception e) {
             e.getMessage();
         }
@@ -82,6 +103,8 @@ public class Cliente implements Acceso {
                 this.correo = "";
                 this.iniSus = null;
                 this.celular = "";
+                this.clienteActivo = false;
+                this.siguienteDisponible = -1; // No hay siguiente disponible
                 return;
             }
             
@@ -90,6 +113,8 @@ public class Cliente implements Acceso {
             this.correo = leerCampo(archivo, 20).trim();
             this.iniSus = LocalDate.ofEpochDay(archivo.readLong());
             this.celular = leerCampo(archivo, 9).trim();
+            this.clienteActivo = archivo.readBoolean();
+            this.siguienteDisponible = archivo.readInt(); // Leer el siguiente disponible
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al leer el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -99,7 +124,7 @@ public class Cliente implements Acceso {
         if (registro < 0) {
             throw new IllegalArgumentException("El número de registros no puede ser negativo");
             }
-            long posicionBytes = (long) registro * LONGITUD_REGISTRO;
+            long posicionBytes = 4 + (long) registro * LONGITUD_REGISTRO; // SUMA 4 bytes de cabecera
             if (posicionBytes > archivo.length()) {
                 throw new IOException("El número de registros excede el tamaño del archivo");
             }
@@ -114,8 +139,8 @@ public class Cliente implements Acceso {
     // Método para crear clientes aleatorios y escribirlos en el archivo
     public void crearClientesAleatorios(RandomAccessFile archivo, int cantidad) throws IOException {
     Random rand = new Random();
-    String[] nombres = {"Juan", "Maria", "Luis", "Ana", "Carlos", "Sofia", "Pedro", "Laura", "Diego", "Elena", "Javier", "Isabel", "Andres", "Carmen", "Raul", "Patricia", "Miguel", "Lucia", "Alberto", "Sara", "Fernando", "Claudia", "Victor", "Paula", "Jorge", "Marta", "David", "Cristina", "Antonio", "Veronica", "Ricardo", "Silvia", "Eduardo", "Teresa", "Roberto", "Lorena", "Hector", "Beatriz"};
-    String[] apellidos = {"Garcia", "Rodriguez", "Martinez", "Lopez", "Perez", "Gonzalez", "Sanchez", "Romero", "Fernandez", "Torres", "Diaz", "Moreno", "Alvarez", "Jimenez", "Ruiz", "Hernandez", "Castro", "Ortiz", "Gutierrez", "Molina", "Reyes", "Cruz", "Ramirez", "Flores", "Vasquez", "Guzman", "Ramos", "Mendez", "Castillo", "Delgado", "Aguilar", "Navarro", "Paredes", "Soto", "Cabrera", "Salazar", "Campos", "Cortez"};
+    String[] nombres = {"Juan", "Maria", "Luis", "Ana", "Carlos", "Sofia", "Pedro", "Laura", "Diego", "Elena", "Javier", "Isabel", "Andres", "Carmen", "Raul", "Patricia", "Miguel", "Lucia", "Alberto", "Sara", "Fernando", "Claudia", "Victor", "Paula", "Jorge", "Marta", "David", "Cristina", "Antonio", "Veronica", "Ricardo", "Silvia", "Eduardo", "Teresa", "Roberto", "Lorena", "Hector", "Beatriz", "Gabriel", "Adriana", "Oscar", "Natalia", "Arturo", "Mariana", "Felipe", "Lorena", "Raquel", "Esteban", "Gloria", "Rosa", "Victor", "Patricia", "Alejandro", "Ines"};
+    String[] apellidos = {"Garcia", "Rodriguez", "Martinez", "Lopez", "Perez", "Gonzalez", "Sanchez", "Romero", "Fernandez", "Torres", "Diaz", "Moreno", "Alvarez", "Jimenez", "Ruiz", "Hernandez", "Castro", "Ortiz", "Gutierrez", "Molina", "Reyes", "Cruz", "Ramirez", "Flores", "Vasquez", "Guzman", "Ramos", "Mendez", "Castillo", "Delgado", "Aguilar", "Navarro", "Paredes", "Soto", "Cabrera", "Salazar", "Campos", "Cortez", "Vega", "Rojas", "Morales", "Ponce", "Cano", "Bravo", "Escobar", "Cordero", "Mora", "Lara", "Bermudez", "Quintero", "Cardenas", "Acosta", "Palacios"};
     try {
         for (int i = 0; i < cantidad; i++) {
             String dni = String.format("%08d", rand.nextInt(100_000_000));
@@ -165,7 +190,12 @@ public class Cliente implements Acceso {
 
     public void mostrarDatos(RandomAccessFile archivo) {
     try {
-        archivo.seek(0); // Asegurarse de empezar desde el principio del archivo
+        archivo.seek(4); // Saltar la cabecera del archivo
+        // Leer hasta el final del archivo
+         if (archivo.length() <= 4) {
+            System.out.println("No hay datos para mostrar.");
+            return;
+        }
         while (archivo.getFilePointer() < archivo.length()) {
             Cliente c = new Cliente();
                 c.leer(archivo);
@@ -227,6 +257,8 @@ public class Cliente implements Acceso {
             throw new IllegalArgumentException("Celular inválido");
         return celular;
     }
+
+    
 
 }
 
