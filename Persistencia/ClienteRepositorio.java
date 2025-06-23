@@ -27,7 +27,7 @@ public class ClienteRepositorio {
     // Métodos para abrir y cerrar el archivo
     public void abrirArchivo(String modo) {
         try {
-            archivo = new RandomAccessFile(ruta+"Clientes.dat", modo);
+            archivo = new RandomAccessFile(ruta + "Clientes.dat", modo);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error al abrir el archivo: " + e.getMessage());
         }
@@ -274,6 +274,52 @@ public class ClienteRepositorio {
 
         // 4. Reconstruir índice
         construirIndice();
+    }
+
+    // Ordenar clientes por inserción (DNI)
+    public void ordenarPorInsercion(List<Cliente> listaClientes) {
+        for (int i = 1; i < listaClientes.size(); i++) {
+            Cliente x = listaClientes.get(i); // Elemento actual a insertar
+            int j = i - 1;
+
+            // Convertimos el DNI a número para comparación
+            long dniX = Long.parseLong(x.getDni().trim());
+
+            // Mover elementos mayores que x hacia la derecha
+            while (j >= 0 && dniX < Long.parseLong(listaClientes.get(j).getDni().trim())) {
+                listaClientes.set(j + 1, listaClientes.get(j)); // Desplazar a la derecha
+                j--;
+            }
+
+            listaClientes.set(j + 1, x); // Insertar en la posición correcta
+        }
+    }
+
+    // Busca en la lista de clientes (ya ordenada por DNI)
+    public Cliente busquedaBinariaEnLista(List<Cliente> lista, String dniBuscado) {
+        long dniBuscadoNum = Long.parseLong(dniBuscado.trim());
+        int a = 0, b = lista.size() - 1;
+        while (a <= b) {
+            int m = (a + b) / 2;
+            long dniActual = Long.parseLong(lista.get(m).getDni().trim());
+            if (dniActual == dniBuscadoNum) {
+                return lista.get(m);
+            } else if (dniBuscadoNum < dniActual) {
+                b = m - 1;
+            } else {
+                a = m + 1;
+            }
+        }
+        return null;
+    }
+
+    public Cliente busquedaBinaria(String dniBuscado) throws IOException {
+        // 1. Leer clientes activos a RAM
+        List<Cliente> lista = listarClientes();
+        // 2. Ordenar por inserción
+        ordenarPorInsercion(lista);
+        // 3. Hacer búsqueda binaria en la lista
+        return busquedaBinariaEnLista(lista, dniBuscado);
     }
 
     // Ayuda: calcular posición física en bytes de un registro

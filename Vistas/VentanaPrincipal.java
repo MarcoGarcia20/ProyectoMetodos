@@ -7,6 +7,7 @@ import javax.swing.*;
 import Controladores.ClienteControlador;
 import Persistencia.ClienteRepositorio;
 import Vistas.VentanasCliente.VentanaCompactarCliente;
+import Vistas.VentanasCliente.VentanaCompararBusquedas;
 import Vistas.VentanasCliente.VentanaConsultarCliente;
 import Vistas.VentanasCliente.VentanaEliminarCliente;
 import Vistas.VentanasCliente.VentanaIngresarCliente;
@@ -41,7 +42,8 @@ public class VentanaPrincipal extends JFrame {
         JMenuItem modificarMenuItem = new JMenuItem("Modificar Cliente");
         JMenuItem eliminarMenuItem = new JMenuItem("Eliminar Cliente");
 
-        JMenuItem compactarMenuItem = new JMenuItem("Compactar Base de Datos");
+        JMenuItem compactarMenuItem = new JMenuItem("Compactar Archivo");
+        JMenuItem compararBusquedasMenuItem = new JMenuItem("Comparar Búsquedas por DNI");
 
         // Agregar ActionListeners para cada opción del menú
         ingresarMenuItem.addActionListener(e -> {
@@ -80,6 +82,11 @@ public class VentanaPrincipal extends JFrame {
             ventana.setVisible(true);
         });
 
+        compararBusquedasMenuItem.addActionListener(e -> {
+            VentanaCompararBusquedas ventana = new VentanaCompararBusquedas(clienteRepositorio);
+            ventana.setVisible(true);
+        });
+
         // Agregar los items al submenú "Cliente"
         clienteMenu.add(ingresarMenuItem);
         clienteMenu.add(consultarMenuItem);
@@ -98,6 +105,7 @@ public class VentanaPrincipal extends JFrame {
 
         // Agregar el item de compactar base de datos al menú "Mantenimiento"
         jMenu2.add(compactarMenuItem);
+        jMenu2.add(compararBusquedasMenuItem);
 
         setJMenuBar(jMenuBar1);
 
