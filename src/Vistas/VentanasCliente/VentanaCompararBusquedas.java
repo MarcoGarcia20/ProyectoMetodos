@@ -55,59 +55,122 @@ public class VentanaCompararBusquedas extends JFrame {
             return;
         }
         String[] dnis = input.split(",");
-        long sumaSecuencial = 0;
-        long sumaBinaria = 0;
-        int encontradosSecuencial = 0;
-        int encontradosBinaria = 0;
+        int n = dnis.length;
 
-        List<Cliente> listaOrdenada;
+        // Encabezados de la tabla
+        String[] columnNames = { "Método", "Ordenamiento (ms)", "Búsqueda Secuencial (ms)", "Búsqueda Binaria (ms)" };
+        Object[][] data = new Object[3][4];
+
+        // RAM
+        long tIniOrden = System.nanoTime();
         try {
-            listaOrdenada = repositorio.listarClientes();
-            repositorio.ordenarPorInsercion(listaOrdenada);
+            repositorio.ordenamientoClasificacionEnRAM();
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error al leer u ordenar clientes: " + ex.getMessage());
+            mostrarError("RAM", ex);
             return;
         }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("DNI\tSecuencial(ns)\tBinaria(ns)\tSecuencial\tBinaria\n");
-        sb.append("---------------------------------------------------------------\n");
-
-        for (String dni : dnis) {
-            dni = dni.trim();
-            long inicioSec = System.nanoTime();
-            Cliente cliSec = null;
-            try {
-                cliSec = repositorio.busquedaSecuencial(dni);
-            } catch (IOException ex) {
+        long tFinOrden = System.nanoTime();
+        double tiempoRAM = (tFinOrden - tIniOrden) / 1_000_000.0;
+        double tiempoSecRAM = 0, tiempoBinRAM = 0;
+        try {
+            List<Cliente> listaRAM = repositorio.listarClientes();
+            for (String dni : dnis) {
+                String d = dni.trim();
+                long t1 = System.nanoTime();
+                repositorio.busquedaSecuencial(d);
+                long t2 = System.nanoTime();
+                tiempoSecRAM += (t2 - t1) / 1_000_000.0;
+                long t3 = System.nanoTime();
+                repositorio.busquedaBinariaEnLista(listaRAM, d);
+                long t4 = System.nanoTime();
+                tiempoBinRAM += (t4 - t3) / 1_000_000.0;
             }
-            long finSec = System.nanoTime();
-
-            long inicioBin = System.nanoTime();
-            Cliente cliBin = repositorio.busquedaBinariaEnLista(listaOrdenada, dni);
-            long finBin = System.nanoTime();
-
-            long tiempoSec = finSec - inicioSec;
-            long tiempoBin = finBin - inicioBin;
-            sumaSecuencial += tiempoSec;
-            sumaBinaria += tiempoBin;
-            if (cliSec != null)
-                encontradosSecuencial++;
-            if (cliBin != null)
-                encontradosBinaria++;
-
-            sb.append(dni).append("\t")
-                    .append(tiempoSec).append("\t")
-                    .append(tiempoBin).append("\t")
-                    .append(cliSec != null ? "✔" : "✘").append("\t\t")
-                    .append(cliBin != null ? "✔" : "✘").append("\n");
+        } catch (IOException ex) {
+            mostrarError("RAM", ex);
         }
-        int n = dnis.length;
-        sb.append("\nPromedio Secuencial: ").append(sumaSecuencial / n).append(" ns");
-        sb.append("\nPromedio Binaria: ").append(sumaBinaria / n).append(" ns");
-        sb.append("\nEncontrados Secuencial: ").append(encontradosSecuencial).append("/").append(n);
-        sb.append("\nEncontrados Binaria: ").append(encontradosBinaria).append("/").append(n);
+        data[0] = new Object[] { "RAM", String.format("%.3f", tiempoRAM), String.format("%.3f", tiempoSecRAM / n),
+                String.format("%.3f", tiempoBinRAM / n) };
 
-        txtResultados.setText(sb.toString());
+        // Nodos
+        long tIniNodos = System.nanoTime();
+        try {
+            repositorio.ordenarPorNodos();
+        } catch (IOException ex) {
+            mostrarError("Nodos", ex);
+            return;
+        }
+        long tFinNodos = System.nanoTime();
+        double tiempoNodos = (tFinNodos - tIniNodos) / 1_000_000.0;
+        double tiempoSecNodos = 0, tiempoBinNodos = 0;
+        try {
+            List<Cliente> listaNodos = repositorio.listarClientes();
+            for (String dni : dnis) {
+                String d = dni.trim();
+                long t1 = System.nanoTime();
+                repositorio.busquedaSecuencial(d);
+                long t2 = System.nanoTime();
+                tiempoSecNodos += (t2 - t1) / 1_000_000.0;
+                long t3 = System.nanoTime();
+                repositorio.busquedaBinariaEnLista(listaNodos, d);
+                long t4 = System.nanoTime();
+                tiempoBinNodos += (t4 - t3) / 1_000_000.0;
+            }
+        } catch (IOException ex) {
+            mostrarError("Nodos", ex);
+        }
+        data[1] = new Object[] { "Nodos", String.format("%.3f", tiempoNodos), String.format("%.3f", tiempoSecNodos / n),
+                String.format("%.3f", tiempoBinNodos / n) };
+
+        // Indirección
+        long tIniInd = System.nanoTime();
+        try {
+            repositorio.ordenarPorIndireccion();
+        } catch (IOException ex) {
+            mostrarError("Indirección", ex);
+            return;
+        }
+        long tFinInd = System.nanoTime();
+        double tiempoInd = (tFinInd - tIniInd) / 1_000_000.0;
+        double tiempoSecInd = 0, tiempoBinInd = 0;
+        try {
+            List<Cliente> listaInd = repositorio.listarClientes();
+            for (String dni : dnis) {
+                String d = dni.trim();
+                long t1 = System.nanoTime();
+                repositorio.busquedaSecuencial(d);
+                long t2 = System.nanoTime();
+                tiempoSecInd += (t2 - t1) / 1_000_000.0;
+                long t3 = System.nanoTime();
+                repositorio.busquedaBinariaEnLista(listaInd, d);
+                long t4 = System.nanoTime();
+                tiempoBinInd += (t4 - t3) / 1_000_000.0;
+            }
+        } catch (IOException ex) {
+            mostrarError("Indirección", ex);
+        }
+        data[2] = new Object[] { "Indirección", String.format("%.3f", tiempoInd),
+                String.format("%.3f", tiempoSecInd / n), String.format("%.3f", tiempoBinInd / n) };
+
+        JTable tabla = new JTable(data, columnNames);
+        tabla.setEnabled(false);
+        tabla.setRowHeight(28);
+
+        // Panel de scroll para la tabla
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        txtResultados.setText(""); // Limpiar el área de texto si quieres
+        // Quitar cualquier componente anterior y añadir la tabla
+        getContentPane().removeAll();
+        JPanel panelTop = new JPanel(new BorderLayout());
+        panelTop.add(new JLabel("DNIs (separados por coma): "), BorderLayout.WEST);
+        panelTop.add(txtDNIs, BorderLayout.CENTER);
+        panelTop.add(btnComparar, BorderLayout.EAST);
+        add(panelTop, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrarError(String metodo, Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error en método " + metodo + ": " + ex.getMessage());
     }
 }

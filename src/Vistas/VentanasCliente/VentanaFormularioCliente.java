@@ -114,7 +114,7 @@ public abstract class VentanaFormularioCliente extends JFrame {
                 encontrado = false;
                 return;
             }
-            Cliente cliente = controlador.consultarCliente(dni);
+            Cliente cliente = controlador.buscarClienteInteligente(dni);
             if (cliente != null) {
                 mostrarCliente(cliente);
                 habilitarCampos();
@@ -168,7 +168,7 @@ public abstract class VentanaFormularioCliente extends JFrame {
         try {
             Cliente cliente = new Cliente();
             cliente.setDni(campoDni.getText().trim());
-            cliente.setEdad(Integer.parseInt(campoEdad.getText().trim()));
+            cliente.setEdad(Byte.parseByte(campoEdad.getText().trim()));
             cliente.setNombre(campoNombre.getText().trim());
             cliente.setCorreo(campoCorreo.getText().trim());
             cliente.setCelular(campoCelular.getText().trim());

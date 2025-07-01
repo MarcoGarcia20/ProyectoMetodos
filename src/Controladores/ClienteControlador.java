@@ -55,7 +55,6 @@ public class ClienteControlador {
     public void ingresarCliente() {
         try {
             Cliente cliente = vista.obtenerClienteDesdeCampos();
-            // cliente.validar();
             repositorio.ingresarCliente(cliente);
         } catch (Exception e) {
             vista.mostrarMensaje("Error al guardar el cliente: " + e.getMessage());
@@ -104,7 +103,7 @@ public class ClienteControlador {
                 vista.limpiarCampos();
                 vista.deshabilitarCampos();
             } else {
-                vista.mostrarMensaje("No se pudo eliminar el registro (puede que no exista o ya fue eliminado).");
+                vista.mostrarMensaje("Registro no existe.");
             }
             return eliminado; // Retorna true si se eliminó correctamente, false en caso contrario
         } catch (Exception e) {
@@ -133,6 +132,108 @@ public class ClienteControlador {
             ventanaCompactarCliente.mostrarMensaje("¡Compactación exitosa!");
         } catch (Exception e) {
             ventanaCompactarCliente.mostrarMensaje("Error: " + e.getMessage());
+        }
+    }
+
+    public void ordenamientoClasificacionEnRAM() {
+        try {
+            repositorio.ordenamientoClasificacionEnRAM();
+            System.out.println("Archivo ordenado por clasificación exitosamente.");
+            ventanaCompactarCliente.mostrarMensaje("¡Ordenación por inserción exitosa!");
+        } catch (Exception e) {
+            ventanaCompactarCliente.mostrarMensaje("Error: " + e.getMessage());
+        }
+    }
+
+    public void ordenarPorNodos() {
+        try {
+            repositorio.ordenarPorNodos();
+            System.out.println("Archivo ordenado por nodos exitosamente.");
+            ventanaCompactarCliente.mostrarMensaje("¡Ordenación por nodos exitosa!");
+        } catch (Exception e) {
+            ventanaCompactarCliente.mostrarMensaje("Error: " + e.getMessage());
+        }
+    }
+
+    public void ordenarPorIndireccion() {
+        try {
+            repositorio.ordenarPorIndireccion();
+            System.out.println("Archivo ordenado por clasificación exitosamente.");
+            ventanaCompactarCliente.mostrarMensaje("¡Ordenación por clasificación exitosa!");
+        } catch (Exception e) {
+            ventanaCompactarCliente.mostrarMensaje("Error: " + e.getMessage());
+        }
+    }
+
+    public Cliente busquedaBinariaPorNodos(String dni) {
+        try {
+            Cliente cliente = repositorio.busquedaBinariaPorNodos(dni);
+            if (cliente != null) {
+                vista.mostrarMensaje("Cliente encontrado");
+                return cliente;
+            } else {
+                vista.mostrarMensaje("Cliente no encontrado.");
+                return null;
+            }
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public Cliente busquedaBinariaPorIndireccion(String dni) {
+        try {
+            Cliente cliente = repositorio.busquedaBinariaPorIndireccion(dni);
+            if (cliente != null) {
+                vista.mostrarMensaje("Cliente encontrado");
+                return cliente;
+            } else {
+                vista.mostrarMensaje("Cliente no encontrado.");
+                return null;
+            }
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public Cliente busquedaBinariaPorRAM(String dni) {
+        try {
+            Cliente cliente = repositorio.busquedaBinariaPorRAM(dni);
+            if (cliente != null) {
+                vista.mostrarMensaje("Cliente encontrado");
+                return cliente;
+            } else {
+                vista.mostrarMensaje("Cliente no encontrado.");
+                return null;
+            }
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public Cliente buscarClienteInteligente(String dni) {
+        try {
+            Cliente cliente = null;
+            switch (repositorio.getUltimoMetodoOrdenado()) {
+                case NODOS:
+                    cliente = repositorio.busquedaBinariaPorNodos(dni);
+                    break;
+                case INDIRECCION:
+                    cliente = repositorio.busquedaBinariaPorIndireccion(dni);
+                    break;
+                case RAM:
+                    cliente = repositorio.busquedaBinariaPorRAM(dni);
+                    break;
+                case NINGUNO:
+                default:
+                    cliente = repositorio.busquedaSecuencial(dni);
+            }
+            return cliente;
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error: " + e.getMessage());
+            return null;
         }
     }
 

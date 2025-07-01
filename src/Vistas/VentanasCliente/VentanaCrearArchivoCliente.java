@@ -2,14 +2,17 @@ package src.Vistas.VentanasCliente;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.JSpinner;
 
 import src.Controladores.ClienteControlador;
 
 public class VentanaCrearArchivoCliente extends JFrame{
+    private JLabel texto;
     private JButton botonCrearArchivo;
-    public JTextField cantidad;
+    public JSpinner cantidad;
 
     private ClienteControlador controlador;
     
@@ -22,14 +25,17 @@ public class VentanaCrearArchivoCliente extends JFrame{
         initComponents();
     }
     private void initComponents() {
+        texto = new JLabel("Ingrese la cantidad de clientes a crear:");
+        texto.setBounds(50, 20, 300, 30);
 
-        cantidad = new JTextField();
+        cantidad = new JSpinner();
         cantidad.setBounds(50, 50, 300, 30);
         
         botonCrearArchivo = new JButton("Crear Archivo");
         botonCrearArchivo.setBounds(150, 100, 120, 30);
         botonCrearArchivo.addActionListener(e -> onCrearArchivo());
         
+        add(texto);
         add(botonCrearArchivo);
         add(cantidad);
     }
@@ -46,7 +52,7 @@ public class VentanaCrearArchivoCliente extends JFrame{
             return;
         }
         try {
-            int cant = Integer.parseInt(cantidad.getText().trim());
+            int cant = Integer.parseInt(cantidad.getValue().toString());
             if (cant <= 0) throw new NumberFormatException();
             controlador.crearArchivoClientes(cant); // Método en el controlador
         } catch (NumberFormatException ex) {

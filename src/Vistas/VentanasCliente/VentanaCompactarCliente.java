@@ -31,7 +31,6 @@ public class VentanaCompactarCliente extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (controlador != null) {
                     controlador.compactarArchivo();
-                    System.out.println(controlador);
                 }
             }
         });
