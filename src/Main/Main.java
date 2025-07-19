@@ -3,7 +3,7 @@ package src.Main;
 import javax.swing.SwingUtilities;
 import src.Vistas.VentanaPrincipal;
 import src.Vistas.VentanasCliente.VentanaIngresarCliente;
-class Principal {
+class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {

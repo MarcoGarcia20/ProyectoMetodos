@@ -1,5 +1,7 @@
 package src.Entidades.Indices;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
 
 // Clase abstracta para definir el índice básico
@@ -12,21 +14,10 @@ public abstract class Indice implements Serializable {
         this.referencia = referencia;
     }
 
-    public String getClave() {
-        return clave;
-    }
-
-    public void setClave(String clave) {
-        this.clave = clave;
-    }
-
-    public long getReferencia() {
-        return referencia;
-    }
-
-    public void setReferencia(long referencia) {
-        this.referencia = referencia;
-    }
+    public String getClave() { return clave; }
+    public void setClave(String clave) { this.clave = clave; }
+    public long getReferencia() { return referencia; }
+    public void setReferencia(long referencia) { this.referencia = referencia; }
 
     // Método útil para comparar índices por clave
     @Override
@@ -40,5 +31,10 @@ public abstract class Indice implements Serializable {
     @Override
     public int hashCode() {
         return clave.hashCode();
+    }
+    
+    public abstract void escribir(RandomAccessFile raf) throws IOException;
+    public static Indice leer(RandomAccessFile raf) throws IOException {
+        throw new UnsupportedOperationException("Usar leer de la subclase concreta");
     }
 }

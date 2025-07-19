@@ -38,7 +38,7 @@ public class ClienteRepositorio {
     // Métodos para abrir y cerrar el archivo
     public void abrirArchivo(String modo) {
         try {
-            archivo = new RandomAccessFile(ruta + "ClientesPrueba.dat", modo);
+            archivo = new RandomAccessFile(ruta + "Clientes.dat", modo);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error al abrir el archivo: " + e.getMessage());
         }
@@ -55,7 +55,7 @@ public class ClienteRepositorio {
     }
 
     public void crearArchivo(int cantidad) throws IOException {
-        File file = new File(ruta + "ClientesPrueba.dat");
+        File file = new File(ruta + "Clientes.dat");
         if (file.exists()) {
             file.delete(); // Eliminar si ya existe
         }
@@ -248,7 +248,7 @@ public class ClienteRepositorio {
      */
     // Mantemiento de archivos
     public void compactarPorCopia() throws IOException {
-        String rutaOriginal = ruta + "ClientesPrueba.dat";
+        String rutaOriginal = ruta + "Clientes.dat";
         String rutaNueva = ruta + "Clientes_temp.dat";
 
         try (
@@ -398,7 +398,7 @@ public class ClienteRepositorio {
             rafTemp.close();
             // 7. Reemplazar el archivo original por el temporal
             archivo.close();
-            File archivoOriginal = new File(ruta + "ClientesPrueba.dat"); // nombreArchivo: tu variable de ruta
+            File archivoOriginal = new File(ruta + "Clientes.dat"); // nombreArchivo: tu variable de ruta
             archivoOriginal.delete();
             archivoTemp.renameTo(archivoOriginal);
             // 8. (Opcional) Reabrir el archivo para uso posterior
@@ -603,7 +603,7 @@ public class ClienteRepositorio {
     }
 
     public void compactacionPorCopia() throws IOException {
-        String rutaOriginal = ruta + "ClientesPrueba.dat";
+        String rutaOriginal = ruta + "Clientes.dat";
         String rutaNueva = ruta + "Clientes_temp.dat";
         // 1. Abrir archivos
         RandomAccessFile original = new RandomAccessFile(rutaOriginal, "r");

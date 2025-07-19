@@ -26,9 +26,8 @@ public class VentanaPrincipal extends JFrame {
         jMenuBar1 = new JMenuBar();
         JMenu jMenu1 = new JMenu("Archivos");
         JMenu jMenu2 = new JMenu("Mantenimiento");
-        JMenu jMenu3 = new JMenu("Editar");
-        JMenu jMenu4 = new JMenu("Ver");
-        JMenu jMenu5 = new JMenu("Ayuda");
+        JMenu jMenu3 = new JMenu("Indices");
+        JMenu jMenu4 = new JMenu("Arboles");
 
         // Crear el submenú "Cliente"
         JMenu clienteMenu = new JMenu("Cliente");
@@ -162,7 +161,6 @@ public class VentanaPrincipal extends JFrame {
         jMenuBar1.add(jMenu2);
         jMenuBar1.add(jMenu3);
         jMenuBar1.add(jMenu4);
-        jMenuBar1.add(jMenu5);
 
         // Agregar el item de compactar base de datos al menú "Mantenimiento"
         jMenu2.add(compactarMenuItem);

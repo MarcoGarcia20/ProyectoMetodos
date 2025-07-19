@@ -3,10 +3,11 @@ import java.io.RandomAccessFile;
 import java.time.LocalDate;
 
 public class Servicio implements Acceso {
-    private String nombre;
-    private double montoPlan;
-    private LocalDate fechaVencimiento;
-    private double montoRecarga;
+    private String idServicio; // 8
+    private String nombre; // 20
+    private double montoPlan; // 8
+    private LocalDate fechaVencimiento; // 8
+    private double montoRecarga; // 8
 
     public Servicio() {
     }
