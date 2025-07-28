@@ -15,8 +15,9 @@ public class IndiceClienteArchivo {
     public static final int REGISTRO_SIZE = DNI_LENGTH + 8; // 8 bytes para DNI + 8 bytes para referencia (long)
     Cliente cliente;
 
-    public IndiceClienteArchivo(String nombreArchivo) {
+    public IndiceClienteArchivo(String nombreArchivo) throws IOException {
         this.nombreArchivo = nombreArchivo;
+        this.indiceArchivo = new RandomAccessFile(nombreArchivo, "rw");
     }
 
     public void abrirArchivoDeIndices() {
@@ -43,14 +44,12 @@ public class IndiceClienteArchivo {
     // Leer todos los índices desde archivo .ind
     public ArrayList<IndiceCliente> cargarIndiceAMemoria() {
         ArrayList<IndiceCliente> indices = new ArrayList<>();
-        File file = new File(nombreArchivo);
-        if (!file.exists())
-            return indices;
-        try (RandomAccessFile raf = new RandomAccessFile(nombreArchivo, "r")) {
-            long numRegs = raf.length() / REGISTRO_SIZE; // Determinar tamaño del índice
+        try {
+            indiceArchivo.seek(0); // Asegúrate de empezar desde el principio
+            long numRegs = indiceArchivo.length() / REGISTRO_SIZE;
             for (int i = 0; i < numRegs; i++) {
-                IndiceCliente idx = leerIndice(raf); // Leer registro de índice
-                indices.add(idx); // Cargar registro en arreglo de nodos
+                IndiceCliente idx = leerIndice(indiceArchivo);
+                indices.add(idx);
             }
         } catch (IOException e) {
             System.err.println("Error al cargar índice: " + e.getMessage());
@@ -87,13 +86,12 @@ public class IndiceClienteArchivo {
     public void reescribirIndice(ArrayList<IndiceCliente> arregloIndices, String archivoDatos) {
         // 1. Abrir archivo índice en modo OUTPUT (reescritura)
         try {
-            abrirArchivoDeIndices();
             indiceArchivo.setLength(0); // Borra todo el archivo
             // 2. Para cada nodo del arreglo índice:
             for (IndiceCliente idx : arregloIndices) {
                 escribirIndice(indiceArchivo, idx);
             }
-            // 3. El archivo se cierra automáticamente por try-with-resources
+            // 3. El archivo se cierra al finalizar el sistema
         } catch (IOException e) {
             System.err.println("Error reescribiendo el archivo de índices: " + e.getMessage());
         }
@@ -104,20 +102,19 @@ public class IndiceClienteArchivo {
 
     public void reconstruirIndice(String archivoDatos) {
         ArrayList<IndiceCliente> arregloIndices = new ArrayList<>();
-
-        try (RandomAccessFile rafDatos = new RandomAccessFile(archivoDatos, "r")) {
-            if (rafDatos.length() == 0) {
+        try {
+            if (indiceArchivo.length() == 0) {
                 System.out.println("El archivo de datos está vacío. No se puede reconstruir el índice.");
                 return;
             }
-            long numRegistros = rafDatos.length() / Cliente.LONGITUD_REGISTRO;
+            long numRegistros = indiceArchivo.length() / Cliente.LONGITUD_REGISTRO;
 
             for (int i = 0; i < numRegistros; i++) {
                 Cliente cliente = new Cliente();
-                cliente.posicionar(rafDatos, i); // Si tienes este método para posicionar en el registro i
-                cliente.leer(rafDatos); // Si tienes este método para leer todo el registro
+                cliente.posicionar(indiceArchivo, i);
+                cliente.leer(indiceArchivo);
 
-                if (cliente.isActivo()) { // Usa el método correcto para verificar si está activo
+                if (cliente.isActivo()) {
                     IndiceCliente indice = new IndiceCliente(cliente.getDni(), i * Cliente.LONGITUD_REGISTRO);
                     arregloIndices.add(indice);
                 }
@@ -125,11 +122,8 @@ public class IndiceClienteArchivo {
         } catch (IOException e) {
             System.err.println("Error al reconstruir índice: " + e.getMessage());
         }
-
-        // Ordenar arreglo de índices por DNI (puedes ajustar el comparador si el DNI es
-        // numérico)
+        // Ordenar arreglo de índices por DNI
         arregloIndices.sort((a, b) -> a.getDni().compareTo(b.getDni()));
-
         // Reescribir archivo de índices (sobrescribe el archivo actual)
         this.reescribirIndice(arregloIndices, archivoDatos);
     }
@@ -181,11 +175,10 @@ public class IndiceClienteArchivo {
         if (!file.exists())
             return;
         try {
-            abrirArchivoDeIndices();
             indiceArchivo.seek(0); // Bandera en el primer byte
             indiceArchivo.writeBoolean(modificado);
         } catch (IOException e) {
-            System.err.println("No se pudo actualizar la bandera del índice: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -200,5 +193,38 @@ public class IndiceClienteArchivo {
             System.err.println("No se pudo leer la bandera del índice: " + e.getMessage());
             return false;
         }
+    }
+
+    public int busquedaBinariaIndice(ArrayList<IndiceCliente> indices,
+            String dniBuscado) {
+        int izquierda = 0, derecha = indices.size() - 1;
+        while (izquierda <= derecha) {
+            int medio = (izquierda + derecha) / 2;
+            String dniMedio = indices.get(medio).getDni().trim();
+            int cmp = dniBuscado.trim().compareTo(dniMedio);
+            if (cmp == 0) {
+                return medio; // Retorna la posición en el arreglo de índices
+            } else if (cmp < 0) {
+                derecha = medio - 1;
+            } else {
+                izquierda = medio + 1;
+            }
+        }
+        return -1; // No encontrado
+    }
+
+    // Uso completo del procedimiento:
+    public Cliente buscarClientePorIndice(ArrayList<IndiceCliente> indices,
+            String dniBuscado, RandomAccessFile archivoDatos, 
+            int TAM_REGISTRO) throws IOException {
+        int pos = busquedaBinariaIndice(indices, dniBuscado);
+        if (pos != -1) {
+            long offset = indices.get(pos).getReferencia();
+            archivoDatos.seek(offset);
+            Cliente cliente = new Cliente();
+            cliente.leer(archivoDatos);
+            return cliente;
+        }
+        return null; // No encontrado
     }
 }

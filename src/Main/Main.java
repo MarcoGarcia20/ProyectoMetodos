@@ -2,6 +2,8 @@ package src.Main;
 
 import javax.swing.SwingUtilities;
 import src.Vistas.VentanaPrincipal;
+import src.Vistas.VentanaClienteArbol.VentanaClientes;
+import src.Vistas.VentanaClienteArbol.VentanaReclamos;
 import src.Vistas.VentanasCliente.VentanaIngresarCliente;
 class Main {
     public static void main(String[] args) {
@@ -13,6 +15,7 @@ class Main {
                 System.out.println("Error: " + e.getMessage());
             }
         });
+
         // Aplicacion aplicacion = new Aplicacion();
 
     }

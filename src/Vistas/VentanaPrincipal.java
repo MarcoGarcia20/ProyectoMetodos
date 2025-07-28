@@ -7,6 +7,8 @@ import javax.swing.*;
 import src.Controladores.*;
 import src.Entidades.Reclamo;
 import src.Persistencia.*;
+import src.Vistas.VentanaClienteArbol.VentanaClientes;
+import src.Vistas.VentanaClienteArbol.VentanaReclamos;
 import src.Vistas.VentanasCliente.*;
 import src.Vistas.VentanasReclamo.*;
 
@@ -51,6 +53,9 @@ public class VentanaPrincipal extends JFrame {
 
         JMenuItem compactarMenuItem = new JMenuItem("Compactar Archivo");
         JMenuItem compararBusquedasMenuItem = new JMenuItem("Comparar Búsquedas por DNI");
+
+        JMenuItem arbolesCliente = new JMenuItem("Árboles Cliente");
+        JMenuItem arbolesReclamo = new JMenuItem("Árboles Reclamo");
 
         // Agregar ActionListeners para cada opción del menú "Cliente"
         crearArchivoMenuItem.addActionListener(e -> {
@@ -134,6 +139,15 @@ public class VentanaPrincipal extends JFrame {
             ventanaEliminarReclamo.setVisible(true);
         });
 
+        arbolesCliente.addActionListener(e -> {
+            VentanaClientes ventanaClientes = new VentanaClientes();
+            ventanaClientes.setVisible(true);
+        });
+        arbolesReclamo.addActionListener(e -> {
+            VentanaReclamos ventanaReclamos = new VentanaReclamos();
+            ventanaReclamos.setVisible(true);
+        });
+
 
         // Agregar los items al submenú "Cliente"
         clienteMenu.add(crearArchivoMenuItem);
@@ -165,6 +179,10 @@ public class VentanaPrincipal extends JFrame {
         // Agregar el item de compactar base de datos al menú "Mantenimiento"
         jMenu2.add(compactarMenuItem);
         jMenu2.add(compararBusquedasMenuItem);
+
+        // Agregar los items de árboles al menú "Árboles"
+        jMenu4.add(arbolesCliente);
+        jMenu4.add(arbolesReclamo);
 
         setJMenuBar(jMenuBar1);
 

@@ -1,4 +1,4 @@
-package src.Arboles;
+package src.Estructuras;
 
 public class Nodo {
     private String clave;

@@ -1,4 +1,4 @@
-package src.Arboles;
+package src.Estructuras;
 
 public class Arbol {
     Nodo raiz;
@@ -15,28 +15,33 @@ public class Arbol {
     public boolean estaVacio() {
         return raiz == null;
     }
-    public void insertar(Nodo nuevoNodo) {
+    public void insNodo(Nodo p) {
         if (estaVacio()) {
-            raiz = nuevoNodo;
+            raiz = p;
         } else {
-            insertarRecursivo(raiz, nuevoNodo);
+            insertarRecursivo(raiz, p);
         }
-    }
+    }   
     private void insertarRecursivo(Nodo nodoActual, Nodo nuevoNodo) {
-        if (nuevoNodo.getClave().compareTo(nodoActual.getClave()) < 0) {
-            if (nodoActual.getIzquierdo() == null) {
-                nodoActual.setIzquierdo(nuevoNodo);
-            } else {
-                insertarRecursivo(nodoActual.getIzquierdo(), nuevoNodo);
-            }
+    // Comparamos las claves
+    int comparacion = nuevoNodo.getClave().compareTo(nodoActual.getClave());
+
+    if (comparacion < 0) { // La nueva clave es MENOR
+        if (nodoActual.getIzquierdo() == null) {
+            nodoActual.setIzquierdo(nuevoNodo);
         } else {
-            if (nodoActual.getDerecho() == null) {
-                nodoActual.setDerecho(nuevoNodo);
-            } else {
-                insertarRecursivo(nodoActual.getDerecho(), nuevoNodo);
-            }
+            insertarRecursivo(nodoActual.getIzquierdo(), nuevoNodo);
+        }
+    } else if (comparacion > 0) { // La nueva clave es MAYOR
+        if (nodoActual.getDerecho() == null) {
+            nodoActual.setDerecho(nuevoNodo);
+        } else {
+            insertarRecursivo(nodoActual.getDerecho(), nuevoNodo);
         }
     }
+    // Si comparacion == 0, no hacemos nada. La clave ya existe.
+    // Así garantizamos que no hay duplicados.
+}
     public Nodo buscar(String clave) {
         return buscarRecursivo(raiz, clave);
     }
@@ -50,7 +55,7 @@ public class Arbol {
             return buscarRecursivo(nodoActual.getDerecho(), clave);
         }
     }
-    public void eliminar(String clave) {
+    public void elimNodo(String clave) {
         raiz = eliminarRecursivo(raiz, clave);
     }
     private Nodo eliminarRecursivo(Nodo nodoActual, String clave) {
@@ -82,7 +87,7 @@ public class Arbol {
         }
         return nodo;
     }
-    public void recorrerInOrden() {
+    public void mostrarInOrden() {
         recorrerInOrdenRecursivo(raiz);
     }
     private void recorrerInOrdenRecursivo(Nodo nodo) {
@@ -92,7 +97,7 @@ public class Arbol {
             recorrerInOrdenRecursivo(nodo.getDerecho());
         }
     }
-    public void recorrerPreOrden() {
+    public void mostrarPreOrden() {
         recorrerPreOrdenRecursivo(raiz);
     }
     private void recorrerPreOrdenRecursivo(Nodo nodo) {
@@ -102,7 +107,7 @@ public class Arbol {
             recorrerPreOrdenRecursivo(nodo.getDerecho());
         }
     }
-    public void recorrerPostOrden() {
+    public void mostrarPostOrden() {
         recorrerPostOrdenRecursivo(raiz);
     }
     private void recorrerPostOrdenRecursivo(Nodo nodo) {
